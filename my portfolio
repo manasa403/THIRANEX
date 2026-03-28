@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Balaji | Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --primary: #6c63ff;
+      --primary-dark: #5a52d5;
+      --bg: #0f0f1a;
+      --bg-card: #1a1a2e;
+      --bg-dark: #13131f;
+      --text: #e0e0e0;
+      --text-muted: #e4cfde;
+      --border: #2a2a3e;
+      --success: #4caf50;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ── Navbar ── */
+    .navbar {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 5%;
+      background: rgba(15,15,26,0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { color: var(--text-muted); text-decoration: none; transition: color .2s; }
+    .nav-links a:hover { color: var(--primary); }
+    .hamburger { display: none; background: none; border: none; color: var(--text); font-size: 1.3rem; cursor: pointer; }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 6rem 5% 3rem; gap: 2rem;
+    }
+    .hero-greeting { color: var(--primary); font-size: 1.1rem; margin-bottom: .5rem; }
+    .hero-name { font-size: clamp(2.5rem,6vw,4.5rem); font-weight: 700; line-height: 1.1; }
+    .hero-role { font-size: clamp(1rem,2.5vw,1.4rem); color: var(--text-muted); margin: .8rem 0 1.2rem; }
+    .hero-desc { max-width: 500px; color: var(--text-muted); margin-bottom: 2rem; }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .avatar-circle {
+      width: 220px; height: 220px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), #a855f7);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 5rem; color: #fff;
+      box-shadow: 0 0 60px rgba(108,99,255,.4);
+      flex-shrink: 0;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      padding: .75rem 1.8rem; border-radius: 8px;
+      font-size: .95rem; font-weight: 600; cursor: pointer;
+      text-decoration: none; border: none; transition: all .2s;
+      display: inline-block;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); }
+    .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); }
+    .btn-outline:hover { background: var(--primary); color: #fff; }
+
+    /* ── Sections ── */
+    .section { padding: 5rem 5%; }
+    .section-dark { background: var(--bg-dark); }
+    .section-title {
+      font-size: 2rem; font-weight: 700; text-align: center;
+      margin-bottom: 3rem; position: relative;
+    }
+    .section-title::after {
+      content: ''; display: block; width: 60px; height: 4px;
+      background: var(--primary); margin: .8rem auto 0; border-radius: 2px;
+    }
+
+    /* ── About ── */
+    .about-text p { color: var(--text-muted); margin-bottom: 1rem; max-width: 700px; margin-inline: auto; text-align: center; }
+    .about-stats { display: flex; justify-content: center; gap: 3rem; margin-top: 2rem; }
+    .stat { text-align: center; }
+    .stat-num { display: block; font-size: 2rem; font-weight: 700; color: var(--primary); }
+    .stat span:last-child { color: var(--text-muted); font-size: .9rem; }
+
+    /* ── Skills ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px,1fr));
+      gap: 1.2rem; max-width: 800px; margin: 0 auto;
+    }
+    .skill-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.5rem 1rem;
+      display: flex; flex-direction: column; align-items: center; gap: .6rem;
+      font-size: .9rem; color: var(--text-muted); transition: all .2s;
+    }
+    .skill-card:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-4px); }
+    .skill-card i { font-size: 1.8rem; color: var(--primary); }
+
+    /* ── Projects ── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
+      gap: 1.5rem; margin-bottom: 2rem;
+    }
+    .project-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.5rem; transition: all .2s;
+    }
+    .project-card:hover { border-color: var(--primary); transform: translateY(-4px); box-shadow: 0 8px 30px rgba(108,99,255,.15); }
+    .project-card h3 { font-size: 1.1rem; margin-bottom: .6rem; }
+    .project-card p { color: var(--text-muted); font-size: .9rem; margin-bottom: 1rem; }
+    .tech-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: 1rem; }
+    .tech-tag { background: rgba(108,99,255,.15); color: var(--primary); padding: .2rem .6rem; border-radius: 20px; font-size: .75rem; }
+    .project-links { display: flex; gap: .8rem; align-items: center; }
+    .project-links a { color: var(--text-muted); font-size: .85rem; text-decoration: none; transition: color .2s; }
+    .project-links a:hover { color: var(--primary); }
+    .featured-badge { display: inline-block; background: var(--primary); color: #fff; font-size: .7rem; padding: .15rem .5rem; border-radius: 20px; margin-bottom: .5rem; }
+    .delete-btn { margin-left: auto; color: #e05555 !important; cursor: pointer; background: none; border: none; font-size: .85rem; }
+
+    /* ── Add Project Form ── */
+    .add-project-toggle { text-align: center; margin-top: 1rem; }
+    .project-form-container {
+      max-width: 600px; margin: 2rem auto 0;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 2rem;
+    }
+    .project-form-container h3 { margin-bottom: 1.5rem; }
+    .project-form-container input,
+    .project-form-container textarea {
+      width: 100%; padding: .75rem 1rem; margin-bottom: 1rem;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text); font-family: inherit; font-size: .9rem;
+    }
+    .project-form-container input:focus,
+    .project-form-container textarea:focus { outline: none; border-color: var(--primary); }
+    .checkbox-label { display: flex; align-items: center; gap: .5rem; margin-bottom: 1rem; color: var(--text-muted); cursor: pointer; }
+
+    /* ── Contact ── */
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; max-width: 900px; margin: 0 auto; }
+    .contact-item { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.2rem; color: var(--text-muted); }
+    .contact-item i { color: var(--primary); width: 20px; }
+    .social-links { display: flex; gap: 1rem; margin-top: 1.5rem; }
+    .social-links a { color: var(--text-muted); font-size: 1.4rem; transition: color .2s; }
+    .social-links a:hover { color: var(--primary); }
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%; padding: .75rem 1rem; margin-bottom: 1rem;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text); font-family: inherit; font-size: .9rem;
+    }
+    .contact-form input:focus,
+    .contact-form textarea:focus { outline: none; border-color: var(--primary); }
+    .form-msg { margin-top: .5rem; color: var(--success); font-size: .9rem; }
+
+    /* ── Footer ── */
+    .footer { text-align: center; padding: 2rem; color: var(--text-muted); border-top: 1px solid var(--border); font-size: .9rem; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 2rem; right: 2rem;
+      background: var(--primary); color: #fff;
+      padding: .8rem 1.5rem; border-radius: 8px;
+      font-size: .9rem; opacity: 0; pointer-events: none;
+      transition: opacity .3s; z-index: 999;
+    }
+    .toast.show { opacity: 1; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .hero { flex-direction: column; text-align: center; padding-top: 7rem; }
+      .hero-desc { margin-inline: auto; }
+      .hero-btns { justify-content: center; }
+      .avatar-circle { width: 160px; height: 160px; font-size: 3.5rem; }
+      .nav-links { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; width: 100%; background: var(--bg-dark); padding: 1rem 5%; gap: 1rem; }
+      .nav-links.open { display: flex; }
+      .hamburger { display: block; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .about-stats { gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-logo">Balaji</div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <p class="hero-greeting">Hi, I'm</p>
+      <h1 class="hero-name">Balaji</h1>
+      <h2 class="hero-role">Cybersecurity Enthusiast &amp; Full-Stack Developer</h2>
+      <p class="hero-desc">I build secure, scalable web applications and love exploring ethical hacking and network security.</p>
+      <div class="hero-btns">
+        <a href="#projects" class="btn btn-primary">View Projects</a>
+        <a href="#contact" class="btn btn-outline">Contact Me</a>
+      </div>
+    </div>
+    <div class="hero-image">
+      <div class="avatar-circle"><i class="fas fa-user-shield"></i></div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="section" id="about">
+    <h2 class="section-title">About Me</h2>
+    <div class="about-text">
+      <p>I'm a passionate developer with a strong interest in cybersecurity, ethical hacking, and building full-stack web applications. I've completed certifications in cybersecurity and enjoy working on projects that combine security with modern web technologies.</p>
+      <p>When I'm not coding, I'm exploring penetration testing methodologies, setting up Kali Linux labs, and staying up to date with the latest in network security.</p>
+      <div class="about-stats">
+        <div class="stat"><span class="stat-num">10+</span><span>Projects</span></div>
+        <div class="stat"><span class="stat-num">3+</span><span>Certifications</span></div>
+        <div class="stat"><span class="stat-num">2+</span><span>Years Exp</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills -->
+  <section class="section section-dark" id="skills">
+    <h2 class="section-title">Skills</h2>
+    <div class="skills-grid">
+      <div class="skill-card"><i class="fab fa-python"></i><span>Python</span></div>
+      <div class="skill-card"><i class="fab fa-js"></i><span>JavaScript</span></div>
+      <div class="skill-card"><i class="fab fa-node-js"></i><span>Node.js</span></div>
+      <div class="skill-card"><i class="fab fa-html5"></i><span>HTML/CSS</span></div>
+      <div class="skill-card"><i class="fas fa-database"></i><span>MongoDB</span></div>
+      <div class="skill-card"><i class="fas fa-shield-alt"></i><span>Cybersecurity</span></div>
+      <div class="skill-card"><i class="fas fa-network-wired"></i><span>Networking</span></div>
+      <div class="skill-card"><i class="fab fa-linux"></i><span>Kali Linux</span></div>
+      <div class="skill-card"><i class="fab fa-git-alt"></i><span>Git</span></div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section class="section" id="projects">
+    <h2 class="section-title">Projects</h2>
+    <div class="projects-grid" id="projectsGrid"></div>
+
+    <div class="add-project-toggle">
+      <button class="btn btn-primary" id="toggleForm">+ Add Project</button>
+    </div>
+
+    <div class="project-form-container" id="projectForm" style="display:none">
+      <h3>Add New Project</h3>
+      <form id="addProjectForm">
+        <input type="text"  id="f-title"  placeholder="Project Title"               required />
+        <textarea           id="f-desc"   placeholder="Description" rows="3"        required></textarea>
+        <input type="text"  id="f-tech"   placeholder="Tech Stack (comma separated)"/>
+        <input type="url"   id="f-github" placeholder="GitHub URL" />
+        <input type="url"   id="f-live"   placeholder="Live Demo URL" />
+        <label class="checkbox-label"><input type="checkbox" id="f-featured" /> Featured Project</label>
+        <button type="submit" class="btn btn-primary">Save Project</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="section section-dark" id="contact">
+    <h2 class="section-title">Contact Me</h2>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="contact-item"><i class="fas fa-envelope"></i><span>balaji@example.com</span></div>
+        <div class="contact-item"><i class="fas fa-phone"></i><span>+91 XXXXX XXXXX</span></div>
+        <div class="contact-item"><i class="fas fa-map-marker-alt"></i><span>India</span></div>
+        <div class="social-links">
+          <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+        </div>
+      </div>
+      <form class="contact-form" id="contactForm">
+        <input type="text"  placeholder="Your Name"    required />
+        <input type="email" placeholder="Your Email"   required />
+        <textarea placeholder="Your Message" rows="5"  required></textarea>
+        <button type="submit" class="btn btn-primary">Send Message</button>
+        <p class="form-msg" id="formMsg"></p>
+      </form>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>© 2026 Balaji &mdash; Built with Node.js, Express &amp; MongoDB</p>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /* ── Config ──────────────────────────────────────────────── */
+    const API_BASE = 'http://localhost:3000/api';
+
+    /* ── In-memory fallback projects (shown when backend is offline) ── */
+    const FALLBACK = [
+      {
+        _id: '1', title: 'Cybersecurity Dashboard', featured: true,
+        description: 'Real-time fraud analysis dashboard built with Node.js and Chart.js.',
+        techStack: ['Node.js','Express','MongoDB','Chart.js'],
+        githubUrl: 'https://github.com', liveUrl: ''
+      },
+      {
+        _id: '2', title: 'Network Scanner', featured: true,
+        description: 'Python-based network scanner using Scapy for packet analysis.',
+        techStack: ['Python','Scapy','Socket'],
+        githubUrl: 'https://github.com', liveUrl: ''
+      },
+      {
+        _id: '3', title: 'Password Security Tool', featured: false,
+        description: 'Evaluates password strength and generates secure passwords.',
+        techStack: ['JavaScript','HTML','CSS'],
+        githubUrl: 'https://github.com', liveUrl: ''
+      }
+    ];
+
+    let projects = [];
+    let backendOnline = false;
+
+    /* ── Helpers ─────────────────────────────────────────────── */
+    function esc(str) {
+      const d = document.createElement('div');
+      d.appendChild(document.createTextNode(str || ''));
+      return d.innerHTML;
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    /* ── Render projects ─────────────────────────────────────── */
+    function renderProjects() {
+      const grid = document.getElementById('projectsGrid');
+      if (!projects.length) {
+        grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1">No projects yet. Add one below!</p>';
+        return;
+      }
+      grid.innerHTML = projects.map(p => `
+        <div class="project-card">
+          ${p.featured ? '<span class="featured-badge">⭐ Featured</span>' : ''}
+          <h3>${esc(p.title)}</h3>
+          <p>${esc(p.description)}</p>
+          <div class="tech-tags">
+            ${(p.techStack||[]).map(t=>`<span class="tech-tag">${esc(t)}</span>`).join('')}
+          </div>
+          <div class="project-links">
+            ${p.githubUrl ? `<a href="${esc(p.githubUrl)}" target="_blank" rel="noopener"><i class="fab fa-github"></i> GitHub</a>` : ''}
+            ${p.liveUrl   ? `<a href="${esc(p.liveUrl)}"   target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> Live</a>` : ''}
+            <button class="delete-btn" onclick="deleteProject('${p._id}')" title="Delete"><i class="fas fa-trash"></i></button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /* ── Load projects ───────────────────────────────────────── */
+    async function loadProjects() {
+      try {
+        const res = await fetch(`${API_BASE}/projects`, { signal: AbortSignal.timeout(3000) });
+        projects = await res.json();
+        backendOnline = true;
+      } catch {
+        projects = [...FALLBACK];
+        backendOnline = false;
+        console.info('Backend offline — showing demo data.');
+      }
+      renderProjects();
+    }
+
+    /* ── Add project ─────────────────────────────────────────── */
+    document.getElementById('toggleForm').addEventListener('click', () => {
+      const f = document.getElementById('projectForm');
+      f.style.display = f.style.display === 'none' ? 'block' : 'none';
+    });
+
+    document.getElementById('addProjectForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const data = {
+        title:       document.getElementById('f-title').value.trim(),
+        description: document.getElementById('f-desc').value.trim(),
+        techStack:   document.getElementById('f-tech').value.split(',').map(s=>s.trim()).filter(Boolean),
+        githubUrl:   document.getElementById('f-github').value.trim(),
+        liveUrl:     document.getElementById('f-live').value.trim(),
+        featured:    document.getElementById('f-featured').checked
+      };
+
+      if (backendOnline) {
+        try {
+          const res = await fetch(`${API_BASE}/projects`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          });
+          const saved = await res.json();
+          projects.unshift(saved);
+        } catch {
+          data._id = Date.now().toString();
+          projects.unshift(data);
+        }
+      } else {
+        data._id = Date.now().toString();
+        projects.unshift(data);
+      }
+
+      e.target.reset();
+      document.getElementById('projectForm').style.display = 'none';
+      renderProjects();
+      showToast('Project added!');
+    });
+
+    /* ── Delete project ──────────────────────────────────────── */
+    async function deleteProject(id) {
+      if (!confirm('Delete this project?')) return;
+      if (backendOnline) {
+        try { await fetch(`${API_BASE}/projects/${id}`, { method: 'DELETE' }); } catch {}
+      }
+      projects = projects.filter(p => p._id !== id);
+      renderProjects();
+      showToast('Project deleted.');
+    }
+
+    /* ── Contact form ────────────────────────────────────────── */
+    document.getElementById('contactForm').addEventListener('submit', e => {
+      e.preventDefault();
+      document.getElementById('formMsg').textContent = 'Message sent! (Connect a mail service for real delivery.)';
+      e.target.reset();
+    });
+
+    /* ── Navbar mobile ───────────────────────────────────────── */
+    document.getElementById('hamburger').addEventListener('click', () => {
+      document.getElementById('navLinks').classList.toggle('open');
+    });
+    document.querySelectorAll('.nav-links a').forEach(a =>
+      a.addEventListener('click', () => document.getElementById('navLinks').classList.remove('open'))
+    );
+
+    /* ── Init ────────────────────────────────────────────────── */
+    loadProjects();
+  </script>
+</body>
+</html>
