@@ -1,0 +1,135 @@
+const express = require('express');
+const mongoose = require('mongoose');
+
+const app = express();
+app.use(express.json());
+
+// ================= DATABASE =================
+mongoose.connect('mongodb://127.0.0.1:27017/taskdb')
+.then(() => console.log("MongoDB Connected"))
+.catch(err => console.log(err));
+
+// ================= MODEL =================
+const TaskSchema = new mongoose.Schema({
+  title: String,
+  description: String,
+  status: { type: String, default: "pending" }
+}, { timestamps: true });
+
+const Task = mongoose.model('Task', TaskSchema);
+
+// ================= API =================
+
+// CREATE
+app.post('/api/tasks', async (req, res) => {
+  const task = new Task(req.body);
+  const saved = await task.save();
+  res.json(saved);
+});
+
+// READ
+app.get('/api/tasks', async (req, res) => {
+  const tasks = await Task.find();
+  res.json(tasks);
+});
+
+// UPDATE
+app.put('/api/tasks/:id', async (req, res) => {
+  const updated = await Task.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true }
+  );
+  res.json(updated);
+});
+
+// DELETE
+app.delete('/api/tasks/:id', async (req, res) => {
+  await Task.findByIdAndDelete(req.params.id);
+  res.json({ message: "Deleted" });
+});
+
+// ================= FRONTEND =================
+app.get('/', (req, res) => {
+  res.send(`
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <title>Task Manager</title>
+    <style>
+      body { font-family: Arial; text-align:center; }
+      input { margin:5px; padding:8px; }
+      button { padding:8px; margin:5px; }
+      li { margin:10px; }
+    </style>
+  </head>
+  <body>
+
+    <h1>Task Manager</h1>
+
+    <input id="title" placeholder="Title">
+    <input id="desc" placeholder="Description">
+    <button onclick="addTask()">Add Task</button>
+
+    <ul id="list"></ul>
+
+    <script>
+      const API = "/api/tasks";
+
+      async function loadTasks() {
+        const res = await fetch(API);
+        const data = await res.json();
+
+        const list = document.getElementById("list");
+        list.innerHTML = "";
+
+        data.forEach(task => {
+          const li = document.createElement("li");
+          li.innerHTML = \`
+            <b>\${task.title}</b> - \${task.description} [\${task.status}]
+            <button onclick="del('\${task._id}')">Delete</button>
+            <button onclick="done('\${task._id}')">Done</button>
+          \`;
+          list.appendChild(li);
+        });
+      }
+
+      async function addTask() {
+        const title = document.getElementById("title").value;
+        const description = document.getElementById("desc").value;
+
+        await fetch(API, {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({ title, description })
+        });
+
+        loadTasks();
+      }
+
+      async function del(id) {
+        await fetch(API + "/" + id, { method: "DELETE" });
+        loadTasks();
+      }
+
+      async function done(id) {
+        await fetch(API + "/" + id, {
+          method: "PUT",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({ status: "completed" })
+        });
+        loadTasks();
+      }
+
+      loadTasks();
+    </script>
+
+  </body>
+  </html>
+  `);
+});
+
+// ================= SERVER =================
+app.listen(5000, () => {
+  console.log("Server running at http://localhost:5000");
+});
