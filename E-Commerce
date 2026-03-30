@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ShopZone | E-Commerce</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --primary:#6c63ff;--pd:#5a52d5;
+  --bg:#0f0f1a;--card:#1a1a2e;--dark:#13131f;
+  --text:#e0e0e0;--muted:#9090a0;--border:#2a2a3e;
+  --ok:#4caf50;--err:#e05555;--warn:#f59e0b;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+/* Navbar */
+.navbar{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:.9rem 5%;background:rgba(15,15,26,.97);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);gap:1rem}
+.brand{font-size:1.3rem;font-weight:700;color:var(--primary);cursor:pointer}
+.nav-right{display:flex;align-items:center;gap:1rem;flex:1;justify-content:flex-end}
+.search-box{position:relative;flex:1;max-width:300px}
+.search-box input{width:100%;padding:.55rem 2.2rem .55rem .9rem;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.9rem}
+.search-box input:focus{outline:none;border-color:var(--primary)}
+.search-box i{position:absolute;right:.7rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.85rem}
+/* Buttons */
+.btn{padding:.65rem 1.4rem;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;display:inline-block;text-align:center}
+.btn-p{background:var(--primary);color:#fff}.btn-p:hover{background:var(--pd);transform:translateY(-1px)}
+.btn-d{background:var(--err);color:#fff}
+.btn-o{background:transparent;color:var(--primary);border:1.5px solid var(--primary)}.btn-o:hover{background:var(--primary);color:#fff}
+.btn-sm{padding:.4rem .9rem;font-size:.8rem}.wf{width:100%}
+.ibtn{background:none;border:none;color:var(--text);font-size:1.1rem;cursor:pointer;position:relative;padding:.4rem;border-radius:6px;transition:color .2s}.ibtn:hover{color:var(--primary)}
+.badge{position:absolute;top:-4px;right:-4px;background:var(--primary);color:#fff;font-size:.65rem;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700}
+/* Auth nav */
+.anb{display:flex;align-items:center;gap:.5rem;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.45rem .9rem;cursor:pointer;color:var(--text);font-size:.85rem;transition:border-color .2s}.anb:hover{border-color:var(--primary)}
+.umenu{position:relative}
+.udrop{position:absolute;right:0;top:110%;background:var(--card);border:1px solid var(--border);border-radius:10px;min-width:160px;padding:.5rem;z-index:300;display:none}
+.udrop.open{display:block}
+.udrop a{display:block;padding:.55rem .8rem;color:var(--muted);text-decoration:none;border-radius:6px;font-size:.88rem;cursor:pointer;transition:all .2s}.udrop a:hover{background:var(--border);color:var(--text)}
+/* Pages */
+.page{display:none;padding:2rem 5%;max-width:1400px;margin:0 auto}.page.active{display:block}
+.ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem}
+.ph h2{font-size:1.5rem}
+/* Hero */
+.hero{background:linear-gradient(135deg,var(--primary),#a855f7);border-radius:16px;padding:3rem 2rem;text-align:center;margin-bottom:2rem}
+.hero h1{font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:.5rem}
+.hero p{color:rgba(255,255,255,.85);font-size:1.1rem}
+/* Shop */
+.shop-layout{display:grid;grid-template-columns:190px 1fr;gap:2rem}
+.sidebar h3{font-size:1rem;margin-bottom:1rem;color:var(--muted)}
+.citem{padding:.55rem .8rem;border-radius:8px;cursor:pointer;color:var(--muted);font-size:.9rem;transition:all .2s;list-style:none}
+.citem:hover,.citem.active{background:rgba(108,99,255,.15);color:var(--primary)}
+/* Products */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:1.2rem}
+.pcard{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:all .2s}
+.pcard:hover{border-color:var(--primary);transform:translateY(-3px);box-shadow:0 8px 25px rgba(108,99,255,.15)}
+.pcard img{width:100%;height:155px;object-fit:cover}
+.pinfo{padding:1rem}
+.pinfo h4{font-size:.95rem;margin-bottom:.3rem}
+.cbadge{font-size:.72rem;color:var(--primary);background:rgba(108,99,255,.12);padding:.15rem .5rem;border-radius:20px;display:inline-block;margin-bottom:.4rem}
+.price{font-size:1.1rem;font-weight:700;color:var(--primary);margin:.4rem 0}
+.stk{font-size:.78rem;color:var(--muted);margin-bottom:.8rem}
+.stk-low{color:var(--warn)!important}.stk-out{color:var(--err)!important}
+/* Drawer */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:400;display:none}.ov.open{display:block}
+.drawer{position:fixed;right:0;top:0;height:100%;width:360px;background:var(--card);border-left:1px solid var(--border);z-index:500;transform:translateX(100%);transition:transform .3s;display:flex;flex-direction:column}
+.drawer.open{transform:translateX(0)}
+.dh{display:flex;align-items:center;justify-content:space-between;padding:1.2rem 1.5rem;border-bottom:1px solid var(--border)}
+.dh h3{font-size:1.1rem}
+#dItems{flex:1;overflow-y:auto;padding:1rem 1.5rem}
+.dfoot{padding:1.2rem 1.5rem;border-top:1px solid var(--border)}
+.citem2{display:flex;gap:1rem;align-items:center;padding:.8rem 0;border-bottom:1px solid var(--border)}
+.citem2 img{width:55px;height:55px;object-fit:cover;border-radius:8px}
+.ci-info{flex:1}.ci-info h5{font-size:.88rem;margin-bottom:.2rem}
+.ci-info .ip{color:var(--primary);font-size:.85rem;font-weight:600}
+.qc{display:flex;align-items:center;gap:.5rem;margin-top:.4rem}
+.qb{background:var(--border);border:none;color:var(--text);width:24px;height:24px;border-radius:4px;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center}.qb:hover{background:var(--primary);color:#fff}
+.qv{font-size:.85rem;min-width:20px;text-align:center}
+.rmbtn{background:none;border:none;color:var(--err);cursor:pointer;font-size:.85rem;margin-left:auto}
+/* Auth */
+.acard{max-width:420px;margin:3rem auto;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem}
+.atabs{display:flex;gap:.5rem;margin-bottom:1.5rem}
+.aform h3{margin-bottom:1.2rem;font-size:1.2rem}
+.aform input{width:100%;padding:.7rem 1rem;margin-bottom:1rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.9rem}
+.aform input:focus{outline:none;border-color:var(--primary)}
+.ahint{font-size:.8rem;color:var(--muted);text-align:center;margin-top:.8rem}
+.ferr{color:var(--err);font-size:.82rem;margin-top:.5rem;min-height:1rem}
+/* Tabs */
+.tbtn{background:none;border:none;color:var(--muted);padding:.5rem 1rem;cursor:pointer;border-bottom:2px solid transparent;font-size:.9rem;transition:all .2s}
+.tbtn.active{color:var(--primary);border-bottom-color:var(--primary)}
+.atabs2{display:flex;gap:.5rem;border-bottom:1px solid var(--border);margin-bottom:1.5rem}
+.tc{display:none}.tc.active{display:block}
+/* Table */
+.dtbl{width:100%;border-collapse:collapse;font-size:.88rem}
+.dtbl th{text-align:left;padding:.7rem 1rem;color:var(--muted);border-bottom:1px solid var(--border);font-weight:600}
+.dtbl td{padding:.7rem 1rem;border-bottom:1px solid var(--border);vertical-align:middle}
+.dtbl tr:hover td{background:rgba(255,255,255,.02)}
+.dtbl img{width:40px;height:40px;object-fit:cover;border-radius:6px}
+/* Status */
+.st{padding:.2rem .7rem;border-radius:20px;font-size:.75rem;font-weight:600;text-transform:capitalize}
+.st-pending{background:rgba(245,158,11,.15);color:var(--warn)}
+.st-processing{background:rgba(108,99,255,.15);color:var(--primary)}
+.st-shipped{background:rgba(59,130,246,.15);color:#60a5fa}
+.st-delivered{background:rgba(76,175,80,.15);color:var(--ok)}
+.st-cancelled{background:rgba(224,85,85,.15);color:var(--err)}
+/* Orders */
+.ocard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.2rem;margin-bottom:1rem}
+.och{display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem}
+.oid{font-size:.8rem;color:var(--muted)}
+/* Modal */
+.mov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:600;display:none;align-items:center;justify-content:center}
+.mov.open{display:flex}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem;width:90%;max-width:480px;max-height:90vh;overflow-y:auto}
+.mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+.mh h3{font-size:1.1rem}
+.modal input,.modal textarea{width:100%;padding:.7rem 1rem;margin-bottom:1rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit;font-size:.9rem}
+.modal input:focus,.modal textarea:focus{outline:none;border-color:var(--primary)}
+.modal label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:.3rem}
+/* Toast */
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--primary);color:#fff;padding:.8rem 1.5rem;border-radius:8px;font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .3s;z-index:999}
+.toast.show{opacity:1}.toast.err{background:var(--err)}
+/* Misc */
+.loading{text-align:center;color:var(--muted);padding:3rem;grid-column:1/-1}
+.empty{text-align:center;color:var(--muted);padding:3rem}
+.empty i{font-size:3rem;margin-bottom:1rem;display:block;color:var(--border)}
+@media(max-width:768px){
+  .shop-layout{grid-template-columns:1fr}
+  .sidebar{display:flex;gap:.5rem;overflow-x:auto;padding-bottom:.5rem}
+  .sidebar h3{display:none}
+  .drawer{width:100%}
+  .dtbl th:nth-child(3),.dtbl td:nth-child(3){display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="brand" onclick="showPage('shopPage')"><i class="fas fa-store"></i> ShopZone</div>
+  <div class="nav-right">
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search products..."/>
+      <i class="fas fa-search"></i>
+    </div>
+    <button class="ibtn" id="cartBtn"><i class="fas fa-shopping-cart"></i><span class="badge" id="cartBadge">0</span></button>
+    <div id="authArea"></div>
+  </div>
+</nav>
+
+<div id="app">
+
+  <!-- SHOP PAGE -->
+  <div id="shopPage" class="page active">
+    <div class="hero">
+      <h1>Welcome to ShopZone</h1>
+      <p>Discover amazing products at great prices</p>
+    </div>
+    <div class="shop-layout">
+      <aside class="sidebar">
+        <h3>Categories</h3>
+        <ul id="catList"><li class="citem active" data-cat="">All</li></ul>
+      </aside>
+      <main>
+        <div class="pgrid" id="pgrid">
+          <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ORDERS PAGE -->
+  <div id="ordersPage" class="page">
+    <div class="ph"><h2><i class="fas fa-box"></i> My Orders</h2></div>
+    <div id="ordersList"></div>
+  </div>
+
+  <!-- ADMIN PAGE -->
+  <div id="adminPage" class="page">
+    <div class="ph">
+      <h2><i class="fas fa-cog"></i> Admin Panel</h2>
+      <button class="btn btn-p" id="addPBtn">+ Add Product</button>
+    </div>
+    <div class="atabs2">
+      <button class="tbtn active" data-tab="tabProds">Products</button>
+      <button class="tbtn" data-tab="tabOrders">Orders</button>
+    </div>
+    <div id="tabProds" class="tc active"></div>
+    <div id="tabOrders" class="tc"></div>
+  </div>
+
+  <!-- AUTH PAGE -->
+  <div id="authPage" class="page">
+    <div class="acard">
+      <div class="atabs">
+        <button class="tbtn active" id="loginTab">Login</button>
+        <button class="tbtn" id="regTab">Register</button>
+      </div>
+      <form id="loginForm" class="aform">
+        <h3>Welcome Back</h3>
+        <input type="email" id="lEmail" placeholder="Email" required/>
+        <input type="password" id="lPass" placeholder="Password" required/>
+        <button type="submit" class="btn btn-p wf">Login</button>
+        <p class="ahint">Demo Admin: admin@shop.com / admin123</p>
+        <p class="ferr" id="lErr"></p>
+      </form>
+      <form id="regForm" class="aform" style="display:none">
+        <h3>Create Account</h3>
+        <input type="text" id="rName" placeholder="Full Name" required/>
+        <input type="email" id="rEmail" placeholder="Email" required/>
+        <input type="password" id="rPass" placeholder="Password" required/>
+        <button type="submit" class="btn btn-p wf">Register</button>
+        <p class="ferr" id="rErr"></p>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<!-- CART DRAWER -->
+<div class="ov" id="ov"></div>
+<div class="drawer" id="drawer">
+  <div class="dh"><h3>Cart</h3><button class="ibtn" id="closeDrawer"><i class="fas fa-times"></i></button></div>
+  <div id="dItems"></div>
+  <div class="dfoot" id="dFoot"></div>
+</div>
+
+<!-- PRODUCT MODAL (Admin) -->
+<div class="mov" id="pMov">
+  <div class="modal">
+    <div class="mh"><h3 id="pMTitle">Add Product</h3><button class="ibtn" id="closePM"><i class="fas fa-times"></i></button></div>
+    <form id="pForm">
+      <input type="hidden" id="pEid"/>
+      <input type="text"   id="pN"  placeholder="Product Name"  required/>
+      <textarea            id="pD"  placeholder="Description"   required rows="2"></textarea>
+      <input type="number" id="pPr" placeholder="Price (₹)"     required min="0"/>
+      <input type="text"   id="pC"  placeholder="Category"      required/>
+      <input type="number" id="pSt" placeholder="Stock"         required min="0"/>
+      <input type="url"    id="pIm" placeholder="Image URL (optional)"/>
+      <button type="submit" class="btn btn-p wf">Save Product</button>
+    </form>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="mov" id="coMov">
+  <div class="modal">
+    <div class="mh"><h3>Checkout</h3><button class="ibtn" id="closeCo"><i class="fas fa-times"></i></button></div>
+    <form id="coForm">
+      <label>Delivery Address</label>
+      <textarea id="coAddr" placeholder="Enter full delivery address" rows="3" required></textarea>
+      <div id="coSum" style="margin:1rem 0"></div>
+      <button type="submit" class="btn btn-p wf">Place Order</button>
+      <p class="ferr" id="coErr"></p>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ════════════════════════════════════════════
+   CONFIG
+════════════════════════════════════════════ */
+const API = '/api';
+
+/* ── Demo fallback data (works offline) ── */
+const DEMO_PRODUCTS = [
+  {_id:'p1',name:'Wireless Headphones',description:'Premium noise-cancelling headphones',price:2999,category:'Electronics',stock:50,image:'https://placehold.co/300x200/6c63ff/fff?text=Headphones'},
+  {_id:'p2',name:'Mechanical Keyboard', description:'RGB backlit mechanical keyboard',   price:4499,category:'Electronics',stock:30,image:'https://placehold.co/300x200/6c63ff/fff?text=Keyboard'},
+  {_id:'p3',name:'Running Shoes',        description:'Lightweight running shoes',          price:1999,category:'Footwear',   stock:100,image:'https://placehold.co/300x200/6c63ff/fff?text=Shoes'},
+  {_id:'p4',name:'Backpack',             description:'Water-resistant laptop backpack',    price:1499,category:'Bags',       stock:75, image:'https://placehold.co/300x200/6c63ff/fff?text=Backpack'},
+  {_id:'p5',name:'Smart Watch',          description:'Fitness tracking smart watch',       price:5999,category:'Electronics',stock:20, image:'https://placehold.co/300x200/6c63ff/fff?text=Watch'},
+  {_id:'p6',name:'Desk Lamp',            description:'LED adjustable desk lamp',           price:899, category:'Home',       stock:60, image:'https://placehold.co/300x200/6c63ff/fff?text=Lamp'}
+];
+const DEMO_USERS = [
+  {id:'u1',name:'Admin',email:'admin@shop.com',password:'admin123',role:'admin'},
+  {id:'u2',name:'User',email:'user@shop.com',password:'user123',role:'user'}
+];
+
+/* ════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════ */
+let S = {
+  user:    JSON.parse(localStorage.getItem('ec_user')||'null'),
+  token:   localStorage.getItem('ec_token')||'',
+  cart:    JSON.parse(localStorage.getItem('ec_cart')||'[]'),
+  products:[],
+  orders:  JSON.parse(localStorage.getItem('ec_orders')||'[]'),
+  cat:     '',
+  online:  false
+};
+
+/* ════════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════════ */
+const $  = id => document.getElementById(id);
+const esc = s => { const d=document.createElement('div'); d.appendChild(document.createTextNode(s||'')); return d.innerHTML; };
+
+function toast(msg, type=''){
+  const t=$('toast'); t.textContent=msg;
+  t.className='toast show'+(type?' '+type:'');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+async function api(path, method='GET', body=null){
+  const opts={method,headers:{'Content-Type':'application/json'}};
+  if(S.token) opts.headers['Authorization']='Bearer '+S.token;
+  if(body) opts.body=JSON.stringify(body);
+  const res=await fetch(API+path,{...opts,signal:AbortSignal.timeout(3000)});
+  const data=await res.json();
+  if(!res.ok) throw new Error(data.error||'Request failed');
+  return data;
+}
+
+/* ════════════════════════════════════════════
+   NAVIGATION
+════════════════════════════════════════════ */
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  $(id).classList.add('active');
+}
+
+/* ════════════════════════════════════════════
+   AUTH UI
+════════════════════════════════════════════ */
+function renderAuth(){
+  const a=$('authArea');
+  if(S.user){
+    a.innerHTML=`
+      <div class="umenu">
+        <button class="anb" id="uBtn"><i class="fas fa-user-circle"></i> ${esc(S.user.name)} <i class="fas fa-chevron-down" style="font-size:.7rem"></i></button>
+        <div class="udrop" id="uDrop">
+          ${S.user.role==='admin'?'<a onclick="openAdmin()"><i class="fas fa-cog"></i> Admin Panel</a>':''}
+          <a onclick="showPage(\'ordersPage\');loadMyOrders()"><i class="fas fa-box"></i> My Orders</a>
+          <a onclick="logout()" style="color:var(--err)"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+      </div>`;
+    $('uBtn').addEventListener('click',e=>{e.stopPropagation();$('uDrop').classList.toggle('open');});
+  } else {
+    a.innerHTML=`<button class="anb" onclick="showPage('authPage')"><i class="fas fa-sign-in-alt"></i> Login</button>`;
+  }
+}
+document.addEventListener('click',()=>document.querySelectorAll('.udrop').forEach(d=>d.classList.remove('open')));
+
+/* ── Auth tabs ── */
+$('loginTab').addEventListener('click',()=>{
+  $('loginForm').style.display='block'; $('regForm').style.display='none';
+  $('loginTab').classList.add('active'); $('regTab').classList.remove('active');
+});
+$('regTab').addEventListener('click',()=>{
+  $('loginForm').style.display='none'; $('regForm').style.display='block';
+  $('regTab').classList.add('active'); $('loginTab').classList.remove('active');
+});
+
+/* ── Login ── */
+$('loginForm').addEventListener('submit', async e=>{
+  e.preventDefault(); $('lErr').textContent='';
+  const email=$('lEmail').value, pass=$('lPass').value;
+  try {
+    if(S.online){
+      const d=await api('/auth/login','POST',{email,password:pass});
+      saveAuth(d);
+    } else {
+      const u=DEMO_USERS.find(u=>u.email===email&&u.password===pass);
+      if(!u){$('lErr').textContent='Invalid credentials';return;}
+      saveAuth({token:'demo-token',user:{id:u.id,name:u.name,email:u.email,role:u.role}});
+    }
+    showPage('shopPage'); toast('Welcome back, '+S.user.name+'!');
+  } catch(err){$('lErr').textContent=err.message;}
+});
+
+/* ── Register ── */
+$('regForm').addEventListener('submit', async e=>{
+  e.preventDefault(); $('rErr').textContent='';
+  try {
+    if(S.online){
+      const d=await api('/auth/register','POST',{name:$('rName').value,email:$('rEmail').value,password:$('rPass').value});
+      saveAuth(d);
+    } else {
+      const u={id:'u'+Date.now(),name:$('rName').value,email:$('rEmail').value,role:'user'};
+      saveAuth({token:'demo-token',user:u});
+    }
+    showPage('shopPage'); toast('Account created! Welcome, '+S.user.name+'!');
+  } catch(err){$('rErr').textContent=err.message;}
+});
+
+function saveAuth({token,user}){
+  S.token=token; S.user=user;
+  localStorage.setItem('ec_token',token);
+  localStorage.setItem('ec_user',JSON.stringify(user));
+  renderAuth();
+}
+function logout(){
+  S.token=''; S.user=null;
+  localStorage.removeItem('ec_token'); localStorage.removeItem('ec_user');
+  renderAuth(); showPage('shopPage'); toast('Logged out.');
+}
+
+/* ════════════════════════════════════════════
+   PRODUCTS
+════════════════════════════════════════════ */
+async function loadProducts(cat='',search=''){
+  const grid=$('pgrid');
+  grid.innerHTML='<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+  try {
+    let q='';
+    if(cat) q+='?category='+encodeURIComponent(cat);
+    if(search) q+=(q?'&':'?')+'search='+encodeURIComponent(search);
+    S.products=await api('/products'+q);
+    S.online=true;
+  } catch {
+    S.online=false;
+    let p=[...DEMO_PRODUCTS];
+    if(cat) p=p.filter(x=>x.category===cat);
+    if(search) p=p.filter(x=>x.name.toLowerCase().includes(search.toLowerCase()));
+    S.products=p;
+  }
+  renderProducts(); renderCats();
+}
+
+function renderProducts(){
+  const grid=$('pgrid');
+  if(!S.products.length){grid.innerHTML='<div class="empty"><i class="fas fa-box-open"></i>No products found.</div>';return;}
+  grid.innerHTML=S.products.map(p=>{
+    const sc=p.stock===0?'stk-out':p.stock<5?'stk-low':'';
+    const st=p.stock===0?'Out of stock':p.stock<5?`Only ${p.stock} left`:`${p.stock} in stock`;
+    return `<div class="pcard">
+      <img src="${esc(p.image)||'https://placehold.co/300x200/1a1a2e/6c63ff?text=Product'}" alt="${esc(p.name)}" loading="lazy"/>
+      <div class="pinfo">
+        <span class="cbadge">${esc(p.category)}</span>
+        <h4>${esc(p.name)}</h4>
+        <p style="font-size:.8rem;color:var(--muted);margin-bottom:.4rem">${esc(p.description)}</p>
+        <div class="price">₹${p.price.toLocaleString()}</div>
+        <div class="stk ${sc}">${st}</div>
+        <button class="btn btn-p btn-sm wf" onclick="addToCart('${p._id}')" ${p.stock===0?'disabled':''}>
+          <i class="fas fa-cart-plus"></i> Add to Cart
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderCats(){
+  const cats=['', ...new Set(S.products.map(p=>p.category))];
+  $('catList').innerHTML=cats.map(c=>`<li class="citem ${S.cat===c?'active':''}" data-cat="${esc(c)}">${c||'All'}</li>`).join('');
+  document.querySelectorAll('.citem').forEach(el=>{
+    el.addEventListener('click',()=>{S.cat=el.dataset.cat; loadProducts(S.cat,$('searchInput').value);});
+  });
+}
+
+$('searchInput').addEventListener('input',()=>{
+  clearTimeout($('searchInput')._t);
+  $('searchInput')._t=setTimeout(()=>loadProducts(S.cat,$('searchInput').value),350);
+});
+
+/* ════════════════════════════════════════════
+   CART
+════════════════════════════════════════════ */
+function saveCart(){localStorage.setItem('ec_cart',JSON.stringify(S.cart));}
+
+function addToCart(id){
+  const p=S.products.find(x=>x._id===id); if(!p) return;
+  const ex=S.cart.find(i=>i._id===id);
+  if(ex){if(ex.qty>=p.stock){toast('Max stock reached','err');return;} ex.qty++;}
+  else S.cart.push({_id:p._id,name:p.name,price:p.price,image:p.image,qty:1});
+  saveCart(); updateBadge(); toast(p.name+' added to cart!');
+}
+
+function updateBadge(){$('cartBadge').textContent=S.cart.reduce((s,i)=>s+i.qty,0);}
+
+function renderDrawer(){
+  const items=$('dItems'), foot=$('dFoot');
+  if(!S.cart.length){
+    items.innerHTML='<div class="empty"><i class="fas fa-shopping-cart"></i>Your cart is empty.</div>';
+    foot.innerHTML=''; return;
+  }
+  items.innerHTML=S.cart.map(i=>`
+    <div class="citem2">
+      <img src="${esc(i.image)||'https://placehold.co/55x55/1a1a2e/6c63ff?text=P'}" alt="${esc(i.name)}"/>
+      <div class="ci-info">
+        <h5>${esc(i.name)}</h5>
+        <div class="ip">₹${(i.price*i.qty).toLocaleString()}</div>
+        <div class="qc">
+          <button class="qb" onclick="chQty('${i._id}',-1)">−</button>
+          <span class="qv">${i.qty}</span>
+          <button class="qb" onclick="chQty('${i._id}',1)">+</button>
+        </div>
+      </div>
+      <button class="rmbtn" onclick="rmCart('${i._id}')"><i class="fas fa-trash"></i></button>
+    </div>`).join('');
+  const total=S.cart.reduce((s,i)=>s+i.price*i.qty,0);
+  foot.innerHTML=`
+    <div style="display:flex;justify-content:space-between;margin-bottom:1rem;font-weight:600">
+      <span>Total</span><span style="color:var(--primary)">₹${total.toLocaleString()}</span>
+    </div>
+    <button class="btn btn-p wf" onclick="openCheckout()">Proceed to Checkout</button>`;
+}
+
+function chQty(id,d){
+  const i=S.cart.find(x=>x._id===id); if(!i) return;
+  i.qty+=d; if(i.qty<=0) S.cart=S.cart.filter(x=>x._id!==id);
+  saveCart(); updateBadge(); renderDrawer();
+}
+function rmCart(id){S.cart=S.cart.filter(x=>x._id!==id); saveCart(); updateBadge(); renderDrawer();}
+
+$('cartBtn').addEventListener('click',()=>{renderDrawer();$('drawer').classList.add('open');$('ov').classList.add('open');});
+$('closeDrawer').addEventListener('click',closeDrawer);
+$('ov').addEventListener('click',closeDrawer);
+function closeDrawer(){$('drawer').classList.remove('open');$('ov').classList.remove('open');}
+
+/* ════════════════════════════════════════════
+   CHECKOUT
+════════════════════════════════════════════ */
+function openCheckout(){
+  if(!S.user){closeDrawer();showPage('authPage');toast('Please login to checkout','err');return;}
+  const total=S.cart.reduce((s,i)=>s+i.price*i.qty,0);
+  $('coSum').innerHTML=`
+    <div style="background:var(--bg);border-radius:8px;padding:1rem;font-size:.88rem">
+      ${S.cart.map(i=>`<div style="display:flex;justify-content:space-between;margin-bottom:.4rem"><span>${esc(i.name)} x${i.qty}</span><span>₹${(i.price*i.qty).toLocaleString()}</span></div>`).join('')}
+      <hr style="border-color:var(--border);margin:.6rem 0"/>
+      <div style="display:flex;justify-content:space-between;font-weight:700"><span>Total</span><span style="color:var(--primary)">₹${total.toLocaleString()}</span></div>
+    </div>`;
+  $('coErr').textContent='';
+  $('coMov').classList.add('open'); closeDrawer();
+}
+$('closeCo').addEventListener('click',()=>$('coMov').classList.remove('open'));
+
+$('coForm').addEventListener('submit', async e=>{
+  e.preventDefault(); $('coErr').textContent='';
+  try {
+    const order={
+      id:'o'+Date.now(),
+      userId:S.user.id||S.user._id,
+      userName:S.user.name,
+      items:[...S.cart],
+      total:S.cart.reduce((s,i)=>s+i.price*i.qty,0),
+      address:$('coAddr').value,
+      status:'pending',
+      createdAt:new Date().toISOString()
+    };
+    if(S.online){
+      await api('/orders','POST',{
+        items:S.cart.map(i=>({productId:i._id,quantity:i.qty})),
+        address:$('coAddr').value
+      });
+    } else {
+      S.orders.unshift(order);
+      localStorage.setItem('ec_orders',JSON.stringify(S.orders));
+    }
+    S.cart=[]; saveCart(); updateBadge();
+    $('coMov').classList.remove('open'); $('coForm').reset();
+    toast('Order placed successfully!');
+    loadProducts();
+  } catch(err){$('coErr').textContent=err.message;}
+});
+
+/* ════════════════════════════════════════════
+   MY ORDERS
+════════════════════════════════════════════ */
+async function loadMyOrders(){
+  const list=$('ordersList');
+  list.innerHTML='<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+  try {
+    let orders;
+    if(S.online) orders=await api('/orders/my');
+    else orders=S.orders.filter(o=>o.userId===(S.user?.id||S.user?._id));
+    if(!orders.length){list.innerHTML='<div class="empty"><i class="fas fa-box-open"></i>No orders yet.</div>';return;}
+    list.innerHTML=orders.map(o=>`
+      <div class="ocard">
+        <div class="och">
+          <div>
+            <div class="oid">Order #${(o._id||o.id||'').toString().slice(-8).toUpperCase()}</div>
+            <div style="font-size:.8rem;color:var(--muted)">${new Date(o.createdAt).toLocaleDateString()}</div>
+          </div>
+          <span class="st st-${o.status}">${o.status}</span>
+        </div>
+        <div style="font-size:.85rem;color:var(--muted);margin-bottom:.5rem">
+          ${(o.items||[]).map(i=>`${esc(i.name||i.productId)} x${i.quantity||i.qty}`).join(', ')}
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:.82rem;color:var(--muted)"><i class="fas fa-map-marker-alt"></i> ${esc(o.address)}</span>
+          <span style="font-weight:700;color:var(--primary)">₹${o.total.toLocaleString()}</span>
+        </div>
+      </div>`).join('');
+  } catch(err){list.innerHTML=`<div class="empty">${err.message}</div>`;}
+}
+
+/* ════════════════════════════════════════════
+   ADMIN
+════════════════════════════════════════════ */
+function openAdmin(){showPage('adminPage');loadAdminProds();loadAdminOrders();}
+
+document.querySelectorAll('.atabs2 .tbtn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.atabs2 .tbtn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tc').forEach(t=>t.classList.remove('active'));
+    btn.classList.add('active'); $(btn.dataset.tab).classList.add('active');
+  });
+});
+
+async function loadAdminProds(){
+  const el=$('tabProds');
+  el.innerHTML='<div class="loading"><i class="fas fa-spinner fa-spin"></i></div>';
+  try {
+    const prods=S.online ? await api('/products') : DEMO_PRODUCTS;
+    el.innerHTML=`<div style="overflow-x:auto"><table class="dtbl">
+      <thead><tr><th>Img</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
+      <tbody>${prods.map(p=>`<tr>
+        <td><img src="${esc(p.image)||'https://placehold.co/40x40/1a1a2e/6c63ff?text=P'}" alt=""/></td>
+        <td>${esc(p.name)}</td><td>${esc(p.category)}</td>
+        <td>₹${p.price.toLocaleString()}</td><td>${p.stock}</td>
+        <td>
+          <button class="btn btn-o btn-sm" onclick="editProd('${p._id}')">Edit</button>
+          <button class="btn btn-d btn-sm" onclick="delProd('${p._id}')">Delete</button>
+        </td></tr>`).join('')}
+      </tbody></table></div>`;
+  } catch(err){el.innerHTML=`<div class="empty">${err.message}</div>`;}
+}
+
+async function loadAdminOrders(){
+  const el=$('tabOrders');
+  el.innerHTML='<div class="loading"><i class="fas fa-spinner fa-spin"></i></div>';
+  try {
+    const orders=S.online ? await api('/orders') : S.orders;
+    if(!orders.length){el.innerHTML='<div class="empty"><i class="fas fa-box-open"></i>No orders yet.</div>';return;}
+    el.innerHTML=`<div style="overflow-x:auto"><table class="dtbl">
+      <thead><tr><th>Order ID</th><th>Customer</th><th>Total</th><th>Status</th><th>Update</th></tr></thead>
+      <tbody>${orders.map(o=>`<tr>
+        <td>#${(o._id||o.id||'').toString().slice(-8).toUpperCase()}</td>
+        <td>${esc(o.user?.name||o.userName||'N/A')}<br/><small style="color:var(--muted)">${esc(o.user?.email||'')}</small></td>
+        <td>₹${o.total.toLocaleString()}</td>
+        <td><span class="st st-${o.status}">${o.status}</span></td>
+        <td><select onchange="updStatus('${o._id||o.id}',this.value)" style="background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:.3rem .5rem;font-size:.8rem">
+          ${['pending','processing','shipped','delivered','cancelled'].map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${s}</option>`).join('')}
+        </select></td>
+      </tr>`).join('')}
+      </tbody></table></div>`;
+  } catch(err){el.innerHTML=`<div class="empty">${err.message}</div>`;}
+}
+
+async function updStatus(id,status){
+  try {
+    if(S.online) await api(`/orders/${id}/status`,'PUT',{status});
+    else { const o=S.orders.find(x=>(x._id||x.id)===id); if(o) o.status=status; localStorage.setItem('ec_orders',JSON.stringify(S.orders)); }
+    toast('Status updated!');
+  } catch(err){toast(err.message,'err');}
+}
+
+async function delProd(id){
+  if(!confirm('Delete this product?')) return;
+  try {
+    if(S.online) await api(`/products/${id}`,'DELETE');
+    toast('Product deleted.'); loadAdminProds(); loadProducts();
+  } catch(err){toast(err.message,'err');}
+}
+
+/* ── Product Modal ── */
+$('addPBtn').addEventListener('click',()=>{
+  $('pMTitle').textContent='Add Product'; $('pForm').reset(); $('pEid').value='';
+  $('pMov').classList.add('open');
+});
+$('closePM').addEventListener('click',()=>$('pMov').classList.remove('open'));
+
+async function editProd(id){
+  try {
+    const p=S.online ? await api(`/products/${id}`) : DEMO_PRODUCTS.find(x=>x._id===id);
+    $('pMTitle').textContent='Edit Product'; $('pEid').value=p._id;
+    $('pN').value=p.name; $('pD').value=p.description; $('pPr').value=p.price;
+    $('pC').value=p.category; $('pSt').value=p.stock; $('pIm').value=p.image||'';
+    $('pMov').classList.add('open');
+  } catch(err){toast(err.message,'err');}
+}
+
+$('pForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const id=$('pEid').value;
+  const body={name:$('pN').value,description:$('pD').value,price:Number($('pPr').value),category:$('pC').value,stock:Number($('pSt').value),image:$('pIm').value};
+  try {
+    if(S.online){
+      if(id) await api(`/products/${id}`,'PUT',body);
+      else   await api('/products','POST',body);
+    } else {
+      toast(id?'(Demo) Product updated!':'(Demo) Product added!');
+    }
+    $('pMov').classList.remove('open');
+    toast(id?'Product updated!':'Product added!');
+    loadAdminProds(); loadProducts();
+  } catch(err){toast(err.message,'err');}
+});
+
+/* ════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════ */
+renderAuth();
+updateBadge();
+loadProducts();
+</script>
+</body>
+</html>
